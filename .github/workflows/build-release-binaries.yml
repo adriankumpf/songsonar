@@ -20,22 +20,6 @@ jobs:
             strip: true
             compress: true
             cargo_flags: ""
-    services:
-      # Create a postgres instance for sqlx-macros to work
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    env:
-      DATABASE_URL: postgres://postgres:postgres@localhost/songsonar-ci
 
     steps:
       - name: Checkout code
@@ -48,15 +32,6 @@ jobs:
           target: ${{ matrix.target }}
 
       - uses: Swatinem/rust-cache@v1
-
-      - name: Install sqlx-cli
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: sqlx-cli --no-default-features --features postgres,native-tls
-
-      - name: Run migrations
-        run: sqlx database reset -y
 
       - name: cargo build
         uses: actions-rs/cargo@v1

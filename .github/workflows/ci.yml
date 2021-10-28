@@ -51,6 +51,9 @@ jobs:
       - name: Run migrations
         run: sqlx database reset -y
 
+      - name: Check saved query metadata
+        run: cargo sqlx prepare --check
+
       - name: cargo build
         uses: actions-rs/cargo@v1
         with:
